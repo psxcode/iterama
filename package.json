@@ -1,0 +1,34 @@
+{
+  "name": "iterama",
+  "version": "0.0.0",
+  "main": "build/index.js",
+  "module": "build/index",
+  "typings": "build/index.d.ts",
+  "files": [
+    "build"
+  ],
+  "private": false,
+  "license": "MIT",
+  "author": "psxcode <psxcode@gmail.com> (https://github.com/psxcode)",
+  "homepage": "https://github.com/psxcode/iterama",
+  "scripts": {
+    "test": "mocha --opts mocha.opts",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@psxcode/compose": "^0.1.1",
+    "circularr": "^0.1.2"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.5.3",
+    "@types/sinon": "^5.0.1",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "rimraf": "^2.6.2",
+    "sinon": "^6.1.5",
+    "ts-node": "^7.0.0",
+    "typescript": "^3.0.1"
+  }
+}
