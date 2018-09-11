@@ -9,7 +9,7 @@ const gen = function* (n: number) {
 }
 const multBy = (x: number) => (val: number) => val * x
 const mult2 = multBy(2)
-export const isEven = (x: number) => x % 2 === 0
+const isEven = (x: number) => x % 2 === 0
 
 describe('[ filter ]', () => {
   it('works with arrays', () => {
