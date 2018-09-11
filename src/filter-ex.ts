@@ -1,4 +1,4 @@
-import { PredicateExFn } from './filter'
+export type PredicateExFn<T> = (arg: T, i: number, iterable: Iterable<T>) => boolean
 
 const filterEx = <T> (pred: PredicateExFn<T>) => (iterable: Iterable<T>): Iterable<T> => ({
   * [Symbol.iterator] () {
