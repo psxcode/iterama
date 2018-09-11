@@ -1,12 +1,6 @@
 import { expect } from 'chai'
 import zip from './zip'
 
-const gen = function* (n: number) {
-  for (let i = 0; i < n; ++i) yield i
-}
-const multBy = (x: number) => (val: number) => val * x
-const mult2 = multBy(2)
-
 describe('[ zip ]', () => {
   it('works with arrays', () => {
     const data0 = [1, 2, 3]
