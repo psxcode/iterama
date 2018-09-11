@@ -1,6 +1,6 @@
 {
   "name": "iterama",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "build/index.js",
   "module": "build/index",
   "typings": "build/index.d.ts",
