@@ -2,6 +2,7 @@ import { expect } from 'chai'
 import { pipe } from '@psxcode/compose'
 import map from './map'
 import skip from './skip'
+import { fi } from './types'
 
 const gen = function* (n: number) {
   for (let i = 0; i < n; ++i) yield i
@@ -18,7 +19,7 @@ describe('[ skip ]', () => {
 
   it('works chained', () => {
     const data = [1, 2, 3, 4, 5]
-    const result = [...pipe(skip(2), map(mult2))(data)]
+    const result = [...pipe(skip(2) as fi<number>, map(mult2))(data)]
     expect(result).deep.eq([6, 8, 10])
   })
 
@@ -38,7 +39,7 @@ describe('[ skipLast ]', () => {
 
   it('works chained', () => {
     const data = [1, 2, 3, 4, 5]
-    const result = [...pipe(skip(-2), map(mult2))(data)]
+    const result = [...pipe(skip(-2) as fi<number>, map(mult2))(data)]
     expect(result).deep.eq([2, 4, 6])
   })
 
