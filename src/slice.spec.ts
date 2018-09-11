@@ -9,6 +9,20 @@ const gen = function* (n: number) {
 const multBy = (x: number) => (val: number) => val * x
 const mult2 = multBy(2)
 
+describe('[ slice defaults ]', () => {
+  it('skip \'to\' param', () => {
+    const data = [1, 2, 3, 4, 5]
+    const result = [...slice(1)(data)]
+    expect(result).deep.eq([2, 3, 4, 5])
+  })
+
+  it('skip both params', () => {
+    const data = [1, 2, 3, 4, 5]
+    const result = [...slice()(data)]
+    expect(result).deep.eq([1, 2, 3, 4, 5])
+  })
+})
+
 describe('[ slice + + ]', () => {
   it('works with arrays', () => {
     const data = [1, 2, 3, 4, 5]
