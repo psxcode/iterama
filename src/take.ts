@@ -9,14 +9,14 @@ const takeFirst = (n: number) => <T> (iterable: Iterable<T>): Iterable<T> => ({
     while (i++ < n && !(ir = it.next()).done) {
       yield ir.value
     }
-  }
+  },
 })
 
 const takeLast = (n: number) => <T> (iterable: Iterable<T>): Iterable<T> => ({
   * [Symbol.iterator] () {
     const last = new FixedArray<T>(n)
     let numValues = 0
-    for (let value of iterable) {
+    for (const value of iterable) {
       last.shift(value)
       numValues++
     }
@@ -29,13 +29,13 @@ const takeLast = (n: number) => <T> (iterable: Iterable<T>): Iterable<T> => ({
     }
 
     /* actual values */
-    for (let value of it) {
+    for (const value of it) {
       yield value
     }
-  }
+  },
 })
 
 const take = (n: number) =>
-  n < 0 ? takeLast(-n) : takeFirst(n)
+  (n < 0 ? takeLast(-n) : takeFirst(n))
 
 export default take

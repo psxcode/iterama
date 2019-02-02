@@ -1,5 +1,5 @@
 function* iterate <T> (iterable: Iterable<T>) {
-  for (let value of iterable) {
+  for (const value of iterable) {
     yield value
   }
 }

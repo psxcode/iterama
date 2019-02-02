@@ -3,6 +3,7 @@ import iterate from './iterate'
 
 const length = (maxLength: number) => <T> (iterable: Iterable<T>): number => {
   for (var i = 0, it = iterate(iterable); i < maxLength && !it.next().done; ++i);
+
   return i
 }
 

@@ -3,10 +3,10 @@ export type TransformExFn<T, R> = (value: T, i: number, iterable: Iterable<T>) =
 const mapEx = <T, R> (xf: TransformExFn<T, R>) => (iterable: Iterable<T>): Iterable<R> => ({
   * [Symbol.iterator] () {
     let i = 0
-    for (let value of iterable) {
+    for (const value of iterable) {
       yield xf(value, i++, iterable)
     }
-  }
+  },
 })
 
 export default mapEx

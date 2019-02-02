@@ -11,23 +11,51 @@
   "author": "psxcode <psxcode@gmail.com> (https://github.com/psxcode)",
   "homepage": "https://github.com/psxcode/iterama",
   "scripts": {
-    "test": "mocha --opts mocha.opts",
-    "build": "tsc -p tsconfig.build.json"
+    "test": "NODE_ENV=test nyc mocha 'test/*.spec.ts'",
+    "build": "NODE_ENV=production rimraf build && tsc -p tsconfig.build.json",
+    "copy": "cp ./{package.json,LICENSE,readme.md} ./build/"
   },
   "dependencies": {
-    "@psxcode/compose": "^0.1.1",
+    "@psxcode/compose": "^0.1.2",
     "circularr": "^0.1.2"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.4",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-typescript": "^7.1.0",
+    "@babel/register": "^7.0.0",
+    "@psxcode/wait": "^0.1.1",
+    "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.9.4",
-    "@types/sinon": "^5.0.2",
-    "chai": "^4.1.2",
+    "@types/node": "^10.12.19",
+    "babel-plugin-istanbul": "^5.1.0",
+    "chai": "^4.2.0",
+    "eslint": "^5.11.1",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-typescript": "^1.0.0-0",
+    "esm": "^3.1.4",
     "mocha": "^5.2.0",
-    "rimraf": "^2.6.2",
-    "sinon": "^6.2.0",
-    "ts-node": "^7.0.0",
-    "typescript": "^3.0.3"
+    "nyc": "^13.1.0",
+    "rimraf": "^2.6.3",
+    "test-fn": "^0.1.0",
+    "typescript": "^3.2.4"
+  },
+  "nyc": {
+    "include": [
+      "src"
+    ],
+    "exclude": [
+      "**/*.spec.ts"
+    ],
+    "require": [
+      "./tshook.js",
+      "esm"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "sourceMap": false,
+    "instrument": false
   }
 }

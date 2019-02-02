@@ -21,10 +21,10 @@ function zip (...iterables: Iterable<any>[]) {
           }
         }
         if (!done) {
-          yield values.map(v => v.value) as any
+          yield values.map((v) => v.value) as any
         }
       }
-    }
+    },
   }
 }
 

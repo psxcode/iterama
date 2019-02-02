@@ -6,10 +6,10 @@ const skipFirst = (n: number) => <T> (iterable: Iterable<T>): Iterable<T> => ({
     const it = iterate(iterable)
     let i = 0
     while (i++ < n && !it.next().done);
-    for (let value of it) {
+    for (const value of it) {
       yield value
     }
-  }
+  },
 })
 
 const skipLast = (n: number) => <T> (iterable: Iterable<T>): Iterable<T> => ({
@@ -21,13 +21,13 @@ const skipLast = (n: number) => <T> (iterable: Iterable<T>): Iterable<T> => ({
       if (res.done) break
       last.shift(res.value)
     }
-    for (let value of it) {
+    for (const value of it) {
       yield last.shift(value)
     }
-  }
+  },
 })
 
 const skip = (n: number) =>
-  n < 0 ? skipLast(-n) : skipFirst(n)
+  (n < 0 ? skipLast(-n) : skipFirst(n))
 
 export default skip

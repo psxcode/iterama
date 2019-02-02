@@ -1,5 +1,0 @@
---ui bdd
---recursive
---require tshook.js
---watch-extensions ts
-src/**/*.spec.ts
