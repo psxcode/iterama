@@ -17,7 +17,7 @@
   "dependencies": {
     "@babel/runtime": "^7.3.1",
     "@psxcode/compose": "^0.1.2",
-    "circularr": "^0.1.5"
+    "circularr": "^0.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -29,15 +29,15 @@
     "@psxcode/wait": "^0.1.1",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
-    "@types/node": "^11.9.4",
+    "@types/node": "^12.0.8",
     "babel-plugin-istanbul": "^5.1.0",
     "babel-preset-minify": "^0.5.0",
     "chai": "^4.2.0",
     "eslint": "^5.14.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-typescript": "^1.0.0-0",
-    "mocha": "^5.2.0",
-    "nyc": "^13.3.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
     "rimraf": "^2.6.3",
     "test-fn": "^0.1.3",
     "typescript": "^3.3.3"
