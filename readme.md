@@ -1,4 +1,7 @@
 # Iterama
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/psxcode/iterama.svg)](https://greenkeeper.io/)
+
 Composable functional `Iterable<T>` helpers.
 
 ### Install
