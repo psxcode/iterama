@@ -1,7 +1,7 @@
 # Iterama
 
-Composable functional `Iterable<T>` helpers. Every helper is lazy, works with arrays, sets,
-generators and any other iterable, and has no runtime dependencies.
+Composable functional `Iterable<T>` helpers with no runtime dependencies. They work with arrays,
+sets, generators and any other iterable, and transforms stay lazy wherever possible.
 
 ## Requirements
 
@@ -76,9 +76,9 @@ const result = [...filter(isEven)([1, 2, 3, 4])]
 ```ts
 import { filterEx } from 'iterama'
 
-const skipEverySecond = (x: string, i: number) => i % 2 !== 0
+const isEvenIndex = (_value: string, i: number) => i % 2 === 0
 
-const result = [...filterEx(skipEverySecond)(['a', 'b', 'c', 'd'])]
+const result = [...filterEx(isEvenIndex)(['a', 'b', 'c', 'd'])]
 
 // ['a', 'c']
 ```
@@ -237,7 +237,8 @@ const result = [...scanEx(reducer, 0)([1, 2, 3, 4])]
 
 `(count: number) => <T> (iterable: Iterable<T>) => Iterable<T>`
 
-A negative `count` skips the last `|count|` values.
+A negative `count` skips the last `|count|` values. A fractional `count` is truncated, like
+`Array.prototype.slice`; `NaN` behaves like `0` and `-Infinity` skips everything.
 
 ```ts
 import { skip } from 'iterama'
@@ -253,7 +254,7 @@ const result1 = [...skip(-2)([1, 2, 3, 4, 5, 6])]
 
 ### `slice`
 
-`(from: number, to: number) => <T> (iterable: Iterable<T>) => Iterable<T>`
+`(from?: number, to?: number) => <T> (iterable: Iterable<T>) => Iterable<T>`
 
 Negative bounds are counted from the end of the iterable.
 
@@ -300,7 +301,8 @@ const r = [...startWith(0)([1, 2, 3])]
 
 `(count: number) => <T> (iterable: Iterable<T>) => Iterable<T>`
 
-A negative `count` takes the last `|count|` values.
+A negative `count` takes the last `|count|` values. A fractional `count` is truncated, like
+`Array.prototype.slice`; `NaN` behaves like `0` and `-Infinity` takes the whole iterable.
 
 ```ts
 import { take } from 'iterama'
