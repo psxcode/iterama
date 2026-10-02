@@ -1,14 +1,11 @@
-import { describe, it } from 'mocha'
-import { expect } from 'chai'
-import { pipe } from '@psxcode/compose'
-import map from '../src/map'
-import skip from '../src/skip'
-import { fi } from '../src/types'
+import assert from 'node:assert/strict'
+import { describe, it } from 'node:test'
+import { map, skip } from '../src/index.ts'
 
 const gen = function* (n: number) {
-  for (let i = 0; i < n; ++i) yield i
+  for (let i = 0; i < n; i++) yield i
 }
-const multBy = (x: number) => (val: number) => val * x
+const multBy = (x: number) => (value: number) => value * x
 const mult2 = multBy(2)
 
 describe('[ skip ]', () => {
@@ -16,21 +13,21 @@ describe('[ skip ]', () => {
     const data = [1, 2, 3, 4, 5]
     const result = [...skip(2)(data)]
 
-    expect(result).deep.eq([3, 4, 5])
+    assert.deepStrictEqual(result, [3, 4, 5])
   })
 
   it('works chained', () => {
     const data = [1, 2, 3, 4, 5]
-    const result = [...pipe(skip(2) as fi<number>, map(mult2))(data)]
+    const result = [...map(mult2)(skip(2)(data))]
 
-    expect(result).deep.eq([6, 8, 10])
+    assert.deepStrictEqual(result, [6, 8, 10])
   })
 
   it('works with Generators', () => {
     const data = gen(5)
     const result = [...skip(2)(data)]
 
-    expect(result).deep.eq([2, 3, 4])
+    assert.deepStrictEqual(result, [2, 3, 4])
   })
 })
 
@@ -39,35 +36,34 @@ describe('[ skipLast ]', () => {
     const data = [1, 2, 3, 4, 5]
     const result = [...skip(-2)(data)]
 
-    expect(result).deep.eq([1, 2, 3])
+    assert.deepStrictEqual(result, [1, 2, 3])
   })
 
   it('works chained', () => {
     const data = [1, 2, 3, 4, 5]
-    const result = [...pipe(skip(-2) as fi<number>, map(mult2))(data)]
+    const result = [...map(mult2)(skip(-2)(data))]
 
-    expect(result).deep.eq([2, 4, 6])
+    assert.deepStrictEqual(result, [2, 4, 6])
   })
 
   it('works with Generators', () => {
     const data = gen(5)
     const result = [...skip(-2)(data)]
 
-    expect(result).deep.eq([0, 1, 2])
+    assert.deepStrictEqual(result, [0, 1, 2])
   })
 })
 
 describe('[ skip overflow ]', () => {
-  it('works with arrays', () => {
+  it('skips everything when the count exceeds the length', () => {
     const data = [1, 2, 3, 4, 5]
-    const result = [...skip(42)(data)]
 
-    expect(result).deep.eq([])
+    assert.deepStrictEqual([...skip(42)(data)], [])
   })
-  it('works with arrays', () => {
-    const data = [1, 2, 3, 4, 5]
-    const result = [...skip(-42)(data)]
 
-    expect(result).deep.eq([])
+  it('skips everything when the negative count exceeds the length', () => {
+    const data = [1, 2, 3, 4, 5]
+
+    assert.deepStrictEqual([...skip(-42)(data)], [])
   })
 })

@@ -1,31 +1,35 @@
-import iterate from './iterate'
+import { iterate } from './iterate.ts'
 
-function zip <A, B> (it0: Iterable<A>, it1: Iterable<B>): Iterable<[A, B]>
-function zip <A, B, C> (it0: Iterable<A>, it1: Iterable<B>, it2: Iterable<C>): Iterable<[A, B, C]>
-function zip <A, B, C, D> (it0: Iterable<A>, it1: Iterable<B>, it2: Iterable<C>, it3: Iterable<D>): Iterable<[A, B, C, D]>
+export function zip<A, B>(it0: Iterable<A>, it1: Iterable<B>): Iterable<[A, B]>
+export function zip<A, B, C>(
+  it0: Iterable<A>,
+  it1: Iterable<B>,
+  it2: Iterable<C>,
+): Iterable<[A, B, C]>
+export function zip<A, B, C, D>(
+  it0: Iterable<A>,
+  it1: Iterable<B>,
+  it2: Iterable<C>,
+  it3: Iterable<D>,
+): Iterable<[A, B, C, D]>
 
-function zip (...iterables: Iterable<any>[]) {
+/** Zips iterables together, stopping at the shortest one. */
+export function zip(...iterables: Iterable<unknown>[]): Iterable<unknown[]> {
   return {
-    * [Symbol.iterator] () {
-      const values: IteratorResult<any>[] = new Array(iterables.length)
-      const iterators = iterables.map(iterate)
-      let done = false
-      while (!done) {
-        for (let i = 0; i < iterables.length; ++i) {
-          values[i] = iterators[i].next()
+    *[Symbol.iterator]() {
+      const iterators = iterables.map((iterable) => iterate(iterable))
+
+      while (true) {
+        const values: unknown[] = []
+
+        for (const iterator of iterators) {
+          const result = iterator.next()
+          if (result.done) return
+          values.push(result.value)
         }
-        for (let i = 0; i < iterables.length; ++i) {
-          if (values[i].done) {
-            done = true
-            break
-          }
-        }
-        if (!done) {
-          yield values.map((v) => v.value) as any
-        }
+
+        yield values
       }
     },
   }
 }
-
-export default zip

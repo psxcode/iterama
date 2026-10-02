@@ -1,10 +1,15 @@
-/* tslint:disable no-var-keyword one-variable-per-declaration */
-import iterate from './iterate'
+import { iterate } from './iterate.ts'
 
-const length = (maxLength: number) => <T> (iterable: Iterable<T>): number => {
-  for (var i = 0, it = iterate(iterable); i < maxLength && !it.next().done; ++i);
+/** Counts the values of an iterable, stopping after `maxLength`. */
+export const length =
+  (maxLength: number) =>
+  <T>(iterable: Iterable<T>): number => {
+    const iterator = iterate(iterable)
+    let count = 0
 
-  return i
-}
+    while (count < maxLength && !iterator.next().done) {
+      count++
+    }
 
-export default length
+    return count
+  }

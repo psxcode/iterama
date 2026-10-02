@@ -1,12 +1,20 @@
-import { ReducerFn } from './reduce'
+import type { ReducerFn } from './reduce.ts'
 
-const scan = <T, R> (reducer: ReducerFn<T, R>) => (iterable: Iterable<T>): Iterable<R> => ({
-  * [Symbol.iterator] () {
-    let state = reducer()
-    for (const value of iterable) {
-      yield state = reducer(state, value)
-    }
-  },
-})
+/**
+ * Emits the accumulator after every value, starting with the seed state.
+ *
+ * @remarks
+ * The reducer is called once without arguments to create the seed state.
+ */
+export const scan =
+  <T, R>(reducer: ReducerFn<T, R>) =>
+  (iterable: Iterable<T>): Iterable<R> => ({
+    *[Symbol.iterator]() {
+      let state = reducer()
 
-export default scan
+      for (const value of iterable) {
+        state = reducer(state, value)
+        yield state
+      }
+    },
+  })

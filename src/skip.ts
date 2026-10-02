@@ -1,33 +1,44 @@
-import FixedArray from 'circularr'
-import iterate from './iterate'
+import { iterate } from './iterate.ts'
+import { RingBuffer } from './ring-buffer.ts'
 
-const skipFirst = (n: number) => <T> (iterable: Iterable<T>): Iterable<T> => ({
-  * [Symbol.iterator] () {
-    const it = iterate(iterable)
-    let i = 0
-    while (i++ < n && !it.next().done);
-    for (const value of it) {
-      yield value
-    }
-  },
-})
+const skipFirst =
+  (count: number) =>
+  <T>(iterable: Iterable<T>): Iterable<T> => ({
+    *[Symbol.iterator]() {
+      const iterator = iterate(iterable)
 
-const skipLast = (n: number) => <T> (iterable: Iterable<T>): Iterable<T> => ({
-  * [Symbol.iterator] () {
-    const it = iterate(iterable)
-    const last = new FixedArray<T>(n)
-    for (let i = 0; i < n; ++i) {
-      const res = it.next()
-      if (res.done) break
-      last.shift(res.value)
-    }
-    for (const value of it) {
-      yield last.shift(value)
-    }
-  },
-})
+      for (let i = 0; i < count; i++) {
+        if (iterator.next().done) return
+      }
 
-const skip = (n: number) =>
-  (n < 0 ? skipLast(-n) : skipFirst(n))
+      yield* iterator
+    },
+  })
 
-export default skip
+const skipLast =
+  (count: number) =>
+  <T>(iterable: Iterable<T>): Iterable<T> => ({
+    *[Symbol.iterator]() {
+      const iterator = iterate(iterable)
+      const buffer = new RingBuffer<T>(count)
+
+      for (let i = 0; i < count; i++) {
+        const result = iterator.next()
+        if (result.done) return
+        buffer.push(result.value)
+      }
+
+      for (const value of iterator) {
+        yield buffer.push(value) as T
+      }
+    },
+  })
+
+/**
+ * Skips `count` values.
+ *
+ * @remarks
+ * A negative `count` skips the last `|count|` values, which buffers them
+ * until the source is exhausted.
+ */
+export const skip = (count: number) => (count < 0 ? skipLast(-count) : skipFirst(count))

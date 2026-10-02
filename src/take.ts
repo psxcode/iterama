@@ -1,41 +1,37 @@
-import FixedArray from 'circularr'
-import iterate from './iterate'
+import { RingBuffer } from './ring-buffer.ts'
 
-const takeFirst = (n: number) => <T> (iterable: Iterable<T>): Iterable<T> => ({
-  * [Symbol.iterator] () {
-    const it = iterate(iterable)
-    let i = 0
-    let ir: any
-    while (i++ < n && !(ir = it.next()).done) {
-      yield ir.value
-    }
-  },
-})
+const takeFirst =
+  (count: number) =>
+  <T>(iterable: Iterable<T>): Iterable<T> => ({
+    *[Symbol.iterator]() {
+      let taken = 0
 
-const takeLast = (n: number) => <T> (iterable: Iterable<T>): Iterable<T> => ({
-  * [Symbol.iterator] () {
-    const last = new FixedArray<T>(n)
-    let numValues = 0
-    for (const value of iterable) {
-      last.shift(value)
-      numValues++
-    }
-    const it = iterate(last)
+      for (const value of iterable) {
+        if (taken++ >= count) return
+        yield value
+      }
+    },
+  })
 
-    /* skip empty values */
-    const offset = last.length - numValues
-    for (let i = 0; i < offset; ++i) {
-      it.next()
-    }
+const takeLast =
+  (count: number) =>
+  <T>(iterable: Iterable<T>): Iterable<T> => ({
+    *[Symbol.iterator]() {
+      const buffer = new RingBuffer<T>(count)
 
-    /* actual values */
-    for (const value of it) {
-      yield value
-    }
-  },
-})
+      for (const value of iterable) {
+        buffer.push(value)
+      }
 
-const take = (n: number) =>
-  (n < 0 ? takeLast(-n) : takeFirst(n))
+      yield* buffer
+    },
+  })
 
-export default take
+/**
+ * Takes `count` values and stops.
+ *
+ * @remarks
+ * A negative `count` takes the last `|count|` values, which buffers them
+ * until the source is exhausted.
+ */
+export const take = (count: number) => (count < 0 ? takeLast(-count) : takeFirst(count))

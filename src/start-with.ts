@@ -1,6 +1,7 @@
-import concat from './concat'
+import { concat } from './concat.ts'
 
-const startWith = <T> (value: T) => (iterable: Iterable<T>) =>
-  concat([value], iterable)
-
-export default startWith
+/** Prepends `value` to an iterable. */
+export const startWith =
+  <T>(value: T) =>
+  (iterable: Iterable<T>): Iterable<T> =>
+    concat([value], iterable)

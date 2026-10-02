@@ -1,6 +1,6 @@
-.idea
+node_modules/
+dist/
+.idea/
 .npmrc
-node_modules
-build
-coverage
-.nyc_output
+.DS_Store
+*.log

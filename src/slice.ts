@@ -1,17 +1,18 @@
-import { pipe } from '@psxcode/compose'
-import skip from './skip'
-import take from './take'
-import { fi } from './types'
+import { skip } from './skip.ts'
+import { take } from './take.ts'
+import type { IterableTransformer } from './types.ts'
 
-const slice = (from: number = 0, to: number = Number.MAX_SAFE_INTEGER) =>
-  <T> (it: Iterable<T>): Iterable<T> =>
-    pipe(
-      from < 0
-        ? take(from) as fi<T>
-        : skip(from) as fi<T>,
-      to < 0
-        ? skip(to) as fi<T>
-        : take(to) as fi<T>
-    )(it)
+/**
+ * Skips `from` values, then takes `to`.
+ *
+ * @remarks
+ * Negative bounds are counted from the end of the iterable.
+ */
+export const slice =
+  (from = 0, to = Number.MAX_SAFE_INTEGER) =>
+  <T>(iterable: Iterable<T>): Iterable<T> => {
+    const skipFrom: IterableTransformer = from < 0 ? take(from) : skip(from)
+    const takeTo: IterableTransformer = to < 0 ? skip(to) : take(to)
 
-export default slice
+    return takeTo(skipFrom(iterable))
+  }

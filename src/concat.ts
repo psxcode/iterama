@@ -1,11 +1,10 @@
-import iterate from './iterate'
+import { iterate } from './iterate.ts'
 
-const concat = <T> (...iterables: Iterable<T>[]): Iterable<T> => ({
-  * [Symbol.iterator] () {
-    for (const it of iterables) {
-      yield* iterate(it)
+/** Lazily concatenates the given iterables. */
+export const concat = <T>(...iterables: Iterable<T>[]): Iterable<T> => ({
+  *[Symbol.iterator]() {
+    for (const iterable of iterables) {
+      yield* iterate(iterable)
     }
   },
 })
-
-export default concat

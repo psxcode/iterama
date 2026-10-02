@@ -1,13 +1,11 @@
-import { describe, it } from 'mocha'
-import { expect } from 'chai'
-import { pipe } from '@psxcode/compose'
-import map from '../src/map'
-import take from '../src/take'
+import assert from 'node:assert/strict'
+import { describe, it } from 'node:test'
+import { map, take } from '../src/index.ts'
 
 const gen = function* (n: number) {
-  for (let i = 0; i < n; ++i) yield i
+  for (let i = 0; i < n; i++) yield i
 }
-const multBy = (x: number) => (val: number) => val * x
+const multBy = (x: number) => (value: number) => value * x
 const mult2 = multBy(2)
 
 describe('[ take ]', () => {
@@ -15,20 +13,21 @@ describe('[ take ]', () => {
     const data = [1, 2, 3, 4, 5]
     const result = [...take(3)(data)]
 
-    expect(result).deep.eq([1, 2, 3])
+    assert.deepStrictEqual(result, [1, 2, 3])
   })
 
   it('works chained', () => {
     const data = [1, 2, 3, 4, 5]
-    const result = [...pipe(map(mult2), take(2))(data)]
+    const result = [...take(2)(map(mult2)(data))]
 
-    expect(result).deep.eq([2, 4])
+    assert.deepStrictEqual(result, [2, 4])
   })
 
   it('works with Generators', () => {
     const data = gen(5)
     const result = [...take(2)(data)]
-    expect(result).deep.eq([0, 1])
+
+    assert.deepStrictEqual(result, [0, 1])
   })
 })
 
@@ -37,36 +36,34 @@ describe('[ takeLast ]', () => {
     const data = [1, 2, 3, 4, 5]
     const result = [...take(-2)(data)]
 
-    expect(result).deep.eq([4, 5])
+    assert.deepStrictEqual(result, [4, 5])
   })
 
   it('works chained', () => {
     const data = [1, 2, 3, 4, 5]
-    const result = [...pipe(map(mult2), take(-2))(data)]
+    const result = [...take(-2)(map(mult2)(data))]
 
-    expect(result).deep.eq([8, 10])
+    assert.deepStrictEqual(result, [8, 10])
   })
 
   it('works with Generators', () => {
     const data = gen(5)
     const result = [...take(-2)(data)]
 
-    expect(result).deep.eq([3, 4])
+    assert.deepStrictEqual(result, [3, 4])
   })
 })
 
 describe('[ take overflow ]', () => {
-  it('works with arrays', () => {
+  it('takes everything when the count exceeds the length', () => {
     const data = [1, 2, 3, 4, 5]
-    const result = [...take(42)(data)]
 
-    expect(result).deep.eq([1, 2, 3, 4, 5])
+    assert.deepStrictEqual([...take(42)(data)], [1, 2, 3, 4, 5])
   })
 
-  it('works with arrays', () => {
+  it('takes everything when the negative count exceeds the length', () => {
     const data = [1, 2, 3, 4, 5]
-    const result = [...take(-42)(data)]
 
-    expect(result).deep.eq([1, 2, 3, 4, 5])
+    assert.deepStrictEqual([...take(-42)(data)], [1, 2, 3, 4, 5])
   })
 })

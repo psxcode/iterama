@@ -1,9 +1,15 @@
-const resolve = <T> (iterator: Iterator<T>): Promise<void> => {
-  const handle = async (ir: IteratorResult<T>): Promise<void> => {
-    ir.done ? void 0 : handle(iterator.next(await ir.value))
-  }
+/**
+ * Drives a synchronous generator whose yields are promises.
+ *
+ * @remarks
+ * Every yielded value is awaited and then passed back into the iterator, which
+ * lets a generator read the resolved value of its own yield expression.
+ */
+export const resolve = <T>(iterator: Iterator<T | Promise<T>>): Promise<void> => {
+  const step = (result: IteratorResult<T | Promise<T>>): Promise<void> =>
+    result.done
+      ? Promise.resolve()
+      : Promise.resolve(result.value).then((value) => step(iterator.next(value)))
 
-  return handle(iterator.next())
+  return step(iterator.next())
 }
-
-export default resolve

@@ -1,7 +1,4 @@
-function* iterate <T> (iterable: Iterable<T>) {
-  for (const value of iterable) {
-    yield value
-  }
+/** Wraps any iterable into a plain generator. */
+export function* iterate<T>(iterable: Iterable<T>): Generator<T> {
+  yield* iterable
 }
-
-export default iterate

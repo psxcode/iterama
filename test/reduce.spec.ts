@@ -1,63 +1,40 @@
-import { expect } from 'chai'
-import fn from 'test-fn'
-import { pipe } from '@psxcode/compose'
-import map from '../src/map'
-import reduce from '../src/reduce'
+import assert from 'node:assert/strict'
+import { describe, it, mock } from 'node:test'
+import { map, reduce } from '../src/index.ts'
+import { callsOf } from './utils.ts'
 
-export const add = (a = 0, b = 0) => a + b
 const gen = function* (n: number) {
-  for (let i = 0; i < n; ++i) yield i
+  for (let i = 0; i < n; i++) yield i
 }
-const multBy = (x: number) => (val: number) => val * x
+const add = (a = 0, b = 0) => a + b
+const multBy = (x: number) => (value: number) => value * x
 const mult2 = multBy(2)
 
 describe('[ reduce ]', () => {
   it('works with arrays', () => {
     const data = [1, 2, 3, 4, 5]
-    const spy = fn(add)
+    const spy = mock.fn(add)
     const result = [...reduce(spy)(data)]
 
-    expect(result).deep.eq([15])
-    expect(spy.calls).deep.eq([
-      [],
-      [0, 1],
-      [1, 2],
-      [3, 3],
-      [6, 4],
-      [10, 5],
-    ])
+    assert.deepStrictEqual(result, [15])
+    assert.deepStrictEqual(callsOf(spy), [[], [0, 1], [1, 2], [3, 3], [6, 4], [10, 5]])
   })
 
   it('works chained', () => {
     const data = [1, 2, 3, 4, 5]
-    const spy = fn(add)
-    const result = [...pipe(reduce(spy), map(mult2))(data)]
+    const spy = mock.fn(add)
+    const result = [...map(mult2)(reduce(spy)(data))]
 
-    expect(result).deep.eq([30])
-    expect(spy.calls).deep.eq([
-      [],
-      [0, 1],
-      [1, 2],
-      [3, 3],
-      [6, 4],
-      [10, 5],
-    ])
+    assert.deepStrictEqual(result, [30])
+    assert.deepStrictEqual(callsOf(spy), [[], [0, 1], [1, 2], [3, 3], [6, 4], [10, 5]])
   })
 
   it('works with Generators', () => {
     const data = gen(6)
-    const spy = fn(add)
+    const spy = mock.fn(add)
     const result = [...reduce(spy)(data)]
 
-    expect(result).deep.eq([15])
-    expect(spy.calls).deep.eq([
-      [],
-      [0, 0],
-      [0, 1],
-      [1, 2],
-      [3, 3],
-      [6, 4],
-      [10, 5],
-    ])
+    assert.deepStrictEqual(result, [15])
+    assert.deepStrictEqual(callsOf(spy), [[], [0, 0], [0, 1], [1, 2], [3, 3], [6, 4], [10, 5]])
   })
 })
