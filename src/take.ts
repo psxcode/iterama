@@ -1,14 +1,16 @@
+import { iterate } from './iterate.ts'
 import { RingBuffer } from './ring-buffer.ts'
 
 const takeFirst =
   (count: number) =>
   <T>(iterable: Iterable<T>): Iterable<T> => ({
     *[Symbol.iterator]() {
-      let taken = 0
+      const iterator = iterate(iterable)
 
-      for (const value of iterable) {
-        if (taken++ >= count) return
-        yield value
+      for (let i = 0; i < count; i++) {
+        const result = iterator.next()
+        if (result.done) return
+        yield result.value
       }
     },
   })
@@ -32,6 +34,14 @@ const takeLast =
  *
  * @remarks
  * A negative `count` takes the last `|count|` values, which buffers them
- * until the source is exhausted.
+ * until the source is exhausted. A fractional `count` is truncated, like
+ * `Array.prototype.slice`; `NaN` behaves like `0` and `-Infinity` yields the
+ * whole iterable.
  */
-export const take = (count: number) => (count < 0 ? takeLast(-count) : takeFirst(count))
+export const take = (count: number) => {
+  const size = Math.trunc(count)
+
+  if (Number.isNaN(size) || size >= 0) return takeFirst(size)
+
+  return Number.isFinite(size) ? takeLast(-size) : takeFirst(Infinity)
+}

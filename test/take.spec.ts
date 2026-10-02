@@ -8,6 +8,21 @@ const gen = function* (n: number) {
 const multBy = (x: number) => (value: number) => value * x
 const mult2 = multBy(2)
 
+const countingSource = () => {
+  const pulled: number[] = []
+
+  function* source() {
+    let i = 0
+
+    while (true) {
+      pulled.push(i)
+      yield i++
+    }
+  }
+
+  return { pulled, source: source() }
+}
+
 describe('[ take ]', () => {
   it('works with arrays', () => {
     const data = [1, 2, 3, 4, 5]
@@ -65,5 +80,41 @@ describe('[ take overflow ]', () => {
     const data = [1, 2, 3, 4, 5]
 
     assert.deepStrictEqual([...take(-42)(data)], [1, 2, 3, 4, 5])
+  })
+})
+
+describe('[ take laziness ]', () => {
+  it('pulls exactly count values', () => {
+    const { pulled, source } = countingSource()
+
+    assert.deepStrictEqual([...take(2)(source)], [0, 1])
+    assert.deepStrictEqual(pulled, [0, 1])
+  })
+
+  it('pulls nothing for a zero count', () => {
+    const { pulled, source } = countingSource()
+
+    assert.deepStrictEqual([...take(0)(source)], [])
+    assert.deepStrictEqual(pulled, [])
+  })
+})
+
+describe('[ take non-integer count ]', () => {
+  const data = [1, 2, 3, 4, 5]
+
+  it('truncates a positive count', () => {
+    assert.deepStrictEqual([...take(2.5)(data)], [1, 2])
+  })
+
+  it('truncates a negative count', () => {
+    assert.deepStrictEqual([...take(-2.5)(data)], [4, 5])
+  })
+
+  it('treats NaN like zero', () => {
+    assert.deepStrictEqual([...take(Number.NaN)(data)], [])
+  })
+
+  it('treats -Infinity as the whole iterable', () => {
+    assert.deepStrictEqual([...take(Number.NEGATIVE_INFINITY)(data)], data)
   })
 })

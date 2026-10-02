@@ -25,4 +25,10 @@ describe('[ distinct ]', () => {
 
     assert.deepStrictEqual(result, [undefined, 1])
   })
+
+  it('treats NaN as a duplicate of itself, like unique', () => {
+    const result = [...distinct([Number.NaN, Number.NaN, 1])]
+
+    assert.deepStrictEqual(result, [Number.NaN, 1])
+  })
 })

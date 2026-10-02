@@ -35,3 +35,11 @@ describe('[ zip ]', () => {
     assert.deepStrictEqual(result, [[1, '1', true]])
   })
 })
+
+describe('[ zip without iterables ]', () => {
+  it('yields nothing instead of looping forever', () => {
+    const zipNone = zip as unknown as () => Iterable<never[]>
+
+    assert.deepStrictEqual([...zipNone()], [])
+  })
+})

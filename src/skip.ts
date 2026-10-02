@@ -39,6 +39,14 @@ const skipLast =
  *
  * @remarks
  * A negative `count` skips the last `|count|` values, which buffers them
- * until the source is exhausted.
+ * until the source is exhausted. A fractional `count` is truncated, like
+ * `Array.prototype.slice`; `NaN` behaves like `0` and `-Infinity` skips
+ * everything.
  */
-export const skip = (count: number) => (count < 0 ? skipLast(-count) : skipFirst(count))
+export const skip = (count: number) => {
+  const size = Math.trunc(count)
+
+  if (Number.isNaN(size) || size >= 0) return skipFirst(size)
+
+  return Number.isFinite(size) ? skipLast(-size) : skipFirst(Infinity)
+}

@@ -19,6 +19,9 @@ export function zip(...iterables: Iterable<unknown>[]): Iterable<unknown[]> {
     *[Symbol.iterator]() {
       const iterators = iterables.map((iterable) => iterate(iterable))
 
+      /* Without iterables the loop below would never end. */
+      if (iterators.length === 0) return
+
       while (true) {
         const values: unknown[] = []
 

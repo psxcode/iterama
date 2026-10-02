@@ -11,15 +11,11 @@ export class RingBuffer<T> implements Iterable<T> {
   #size = 0
 
   constructor(capacity: number) {
-    if (capacity < 1) {
-      throw new RangeError('RingBuffer capacity must be at least 1')
+    if (!Number.isInteger(capacity) || capacity < 1) {
+      throw new RangeError('RingBuffer capacity must be a positive integer')
     }
 
     this.#capacity = capacity
-  }
-
-  get length(): number {
-    return this.#size
   }
 
   push(value: T): T | undefined {

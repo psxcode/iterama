@@ -67,3 +67,23 @@ describe('[ skip overflow ]', () => {
     assert.deepStrictEqual([...skip(-42)(data)], [])
   })
 })
+
+describe('[ skip non-integer count ]', () => {
+  const data = [1, 2, 3, 4, 5]
+
+  it('truncates a positive count', () => {
+    assert.deepStrictEqual([...skip(2.5)(data)], [3, 4, 5])
+  })
+
+  it('truncates a negative count', () => {
+    assert.deepStrictEqual([...skip(-2.5)(data)], [1, 2, 3])
+  })
+
+  it('treats NaN like zero', () => {
+    assert.deepStrictEqual([...skip(Number.NaN)(data)], data)
+  })
+
+  it('skips everything for -Infinity', () => {
+    assert.deepStrictEqual([...skip(Number.NEGATIVE_INFINITY)(data)], [])
+  })
+})
